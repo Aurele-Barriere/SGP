@@ -5,7 +5,6 @@
 
 int main() {
   // Forked process
-  printf("Hello, dad\n");
-  printf("after exit\n"); // This does not happen
+  printf("Son process returning 37\n");
   return 37;
 }
