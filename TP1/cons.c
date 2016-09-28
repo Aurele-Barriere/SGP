@@ -41,6 +41,7 @@ void consummer(int fd) {
   } while (read_chars);
 
   close(fd);
+  check_perror_pipe(unlink("pipe"), NULL);
 }
 
 int main() {
