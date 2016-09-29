@@ -1,6 +1,6 @@
 CC=gcc
 FLAGS=-Wall -Wextra
-DEST= div0 tictac tictacforever
+DEST= div0 tictac tictacforever monitor
 
 all : $(DEST)
 
