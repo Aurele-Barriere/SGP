@@ -2,26 +2,38 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// Generic function to check if an error occured,
+// and exits then.
+void check_perror(int n) {
+  if (n == -1) {
+    perror("Error: ");
+    exit(EXIT_FAILURE);
+  }
+}
+
+// Handles our signal
 void handle (int x) {
   if (x == SIGFPE) {
     printf("Division by zero \n");
+    exit(EXIT_FAILURE);
   }
-  exit(1);
 }
 
 int main () {
-  
+  int i;
+
   struct sigaction act;
   act.sa_handler = handle;
-  act.sa_flags = SIG_DFL;
-  
-  if (sigaction(SIGFPE, &act, NULL) == -1) {
-    perror ("error:");
-    exit(1);
-  }
+
+  // Links our handler to the signal SIGFPE (division by zero)
+  check_perror(sigaction(SIGFPE, &act, NULL));
 
   // Testing our handler
-  printf("4/2: %d\n", 4/2);
-  printf("4/0: %d\n", 4/0);
+  for (i = 5; i >= 0; --i) {
+    printf(" 100 / %d = %d\n", i, 100/i);
+  }
+
+  printf("Loop completed \n"); // This is never reached
+
   return 0;
 }
