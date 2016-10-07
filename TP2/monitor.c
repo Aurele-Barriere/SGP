@@ -8,6 +8,7 @@
 #include <sys/ptrace.h>
 
 pid_t pid_son;
+int son_status;
 int i = 0;
 
 // Generic function to check if an error occured,
@@ -22,6 +23,9 @@ void check_perror(int n) {
 void loop (int n) {
   for (i = 0; i<n; i++) {
     // Nothing
+    if (i % 10000000 == 0) {
+      // printf("%d\n", i);
+    }
   }
   printf("Loop done");
 }
@@ -29,13 +33,8 @@ void loop (int n) {
 void handler (int x) {
 
   if (x == SIGALRM) {
-
     alarm(1);
     kill(pid_son, SIGALRM);
-    wait(NULL);
-    ptrace(PTRACE_PEEKDATA, pid_son, &i, NULL);
-    printf("Number of iterations of the son: %d\n", i);
-    ptrace(PTRACE_CONT, pid_son, 1, NULL);
   }
 }
 
@@ -44,10 +43,6 @@ void handler (int x) {
 
 int main () {
 
-  int son_status;
-
-
-
   pid_son = fork();
   check_perror(pid_son);
 
@@ -55,22 +50,35 @@ int main () {
     // This is the son process
     ptrace(PTRACE_TRACEME);
     loop(1999999999);
+    exit(EXIT_SUCCESS);
 
-  }
-  else {
+  } else {
+
+    int r = 0;
+    char cont = 1;
+
     // This is the parent process
     // Creating the sigaction
     struct sigaction act;
     act.sa_handler = handler;
-    
-    if (sigaction(SIGALRM, &act, NULL) == -1 ||
-	sigaction(SIGINT , &act, NULL) == -1) {
-      perror ("error:");
-      exit(1);
-    }
-    //wait(&son_status);
-    alarm(1);
 
+    check_perror(sigaction(SIGALRM, &act, NULL));
+    // check_perror(sigaction(SIGINT , &act, NULL));
+
+    alarm(1);
+    wait(&son_status);
+    cont = 1;
+    do {
+      wait(&son_status);
+      if (WIFEXITED(son_status)) {
+        printf("WIFEXITED\n");
+        cont = 0;
+      } else {
+        r = ptrace(PTRACE_PEEKDATA, pid_son, &i, NULL);
+        printf("Number of iterations of the son: %d\n", r);
+        ptrace(PTRACE_CONT, pid_son, 1, NULL);
+      }
+    } while (cont);
   }
 
 
