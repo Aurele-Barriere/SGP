@@ -30,7 +30,6 @@ int main () {
   // Creating the sigaction
   struct sigaction act;
   act.sa_handler = handler;
-  act.sa_flags = SIG_DFL;
   
   if (sigaction(SIGALRM, &act, NULL) == -1 ||
       sigaction(SIGINT , &act, NULL) == -1) {

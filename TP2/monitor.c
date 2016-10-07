@@ -29,7 +29,7 @@ void loop (int n) {
 void handler (int x) {
 
   if (x == SIGALRM) {
-    
+
     alarm(1);
     kill(pid_son, SIGALRM);
     wait(NULL);
@@ -42,11 +42,11 @@ void handler (int x) {
 
 
 
-int main () {                                     
-  
+int main () {
+
   int son_status;
 
-  
+
 
   pid_son = fork();
   check_perror(pid_son);
@@ -55,14 +55,13 @@ int main () {
     // This is the son process
     ptrace(PTRACE_TRACEME);
     loop(1999999999);
-    
+
   }
   else {
     // This is the parent process
     // Creating the sigaction
     struct sigaction act;
     act.sa_handler = handler;
-    act.sa_flags = SIG_DFL;
     
     if (sigaction(SIGALRM, &act, NULL) == -1 ||
 	sigaction(SIGINT , &act, NULL) == -1) {
@@ -73,7 +72,7 @@ int main () {
     alarm(1);
 
   }
-  
+
 
   return 0;
 }

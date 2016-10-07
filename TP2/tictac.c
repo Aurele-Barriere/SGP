@@ -25,7 +25,6 @@ int main () {
   // Creating the sigaction
   struct sigaction act;
   act.sa_handler = handler;
-  act.sa_flags = SIG_DFL;
   
   if (sigaction(SIGALRM, &act, NULL) == -1) {
     perror ("error:");
@@ -34,7 +33,7 @@ int main () {
 
   // Calling the alarm
   alarm(1);
-  
+
   // Testing our handler
   fibo(43);
 
