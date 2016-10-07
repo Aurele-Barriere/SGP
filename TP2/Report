@@ -1,0 +1,21 @@
+TP2 Using signals, setjmp, longjmp and ptrace
+Aurèle Barrière & Jérémy Thibault
+
+Exercise 1
+We define a first signal handler. When it receives a SIGFPE (floating point exception), it says what happened and halts the programm.
+
+Exercise 2
+This time, we use the alarm function to send a delayed signal. A handler then treats it, print a global counter then set another alarm until the computation is over.
+
+Exercise 3
+The handler has to treat SIGINT signals too (keyboard interrupt). When one is encountered, we must restore a context (saved with setjmp) with longjmp. We also have to use the sigprocmask function to unlock the handler after its call to longjmp has been made.
+
+Exercise 4
+Our program forks itself. Then, the son program uses ptrace(PTRACE_TRACEME) to tell its father to handle his signals, and then only compute a loop with a counter in a global variable.
+
+The father sends an alarm signal to its son. He then waits for any signal from his son.
+If his son has halted, then the father must halt too.
+If not (if it was just an alarm), then the father uses the function ptrace(PEEKDATA) to see the global counter of his son. He then uses the function ptrace(PTRACE_CONT) to tell it to resume its calculation.
+
+
+We only encountered one questionnable behaviour : the first time the father gets a signal from his son, it is the same that the one we get when the son died (even if it isn't the case). To empirically solve this issue, we added a first wait function of which we did not use the result, then proceeded as expected.
