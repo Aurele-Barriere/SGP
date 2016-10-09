@@ -30,7 +30,7 @@ int main () {
   // Creating the sigaction
   struct sigaction act;
   act.sa_handler = handler;
-  
+
   if (sigaction(SIGALRM, &act, NULL) == -1 ||
       sigaction(SIGINT , &act, NULL) == -1) {
     perror ("error:");
@@ -40,10 +40,14 @@ int main () {
   // Testing our handler
   int s = setjmp(env);
   sigset_t set;
-  if(s) { printf("\nContext has been successfully restored\n"); }
+  if(s) {
+    printf("\nContext has been successfully restored\n");
+  }
+  // unblocking the signals
   sigaddset(&set, SIGINT);
   sigaddset(&set, SIGALRM);
   sigprocmask(SIG_UNBLOCK, &set, NULL);
+  
   // Calling the alarm
   alarm(1);
   i = 0;

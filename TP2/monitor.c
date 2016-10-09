@@ -21,13 +21,9 @@ void check_perror(int n) {
 }
 
 void loop (int n) {
-  for (i = 0; i<n; i++) {
-    // Nothing
-    if (i % 10000000 == 0) {
-      // printf("%d\n", i);
-    }
-  }
-  printf("Loop done");
+
+  for (i = 0; i<n; i++);
+  printf("Loop done\n");
 }
 
 void handler (int x) {
@@ -54,10 +50,11 @@ int main () {
 
   } else {
 
-    int r = 0;
-    char cont = 1;
-
     // This is the parent process
+
+    int r = 0; // will contain the response to ptrace(PTRACE_PEEKDATA, ...)
+    char cont = 1; // will be set to 0 when the son process ends
+
     // Creating the sigaction
     struct sigaction act;
     act.sa_handler = handler;
@@ -71,7 +68,7 @@ int main () {
     do {
       wait(&son_status);
       if (WIFEXITED(son_status)) {
-        printf("WIFEXITED\n");
+        printf("Son process ended\n");
         cont = 0;
       } else {
         r = ptrace(PTRACE_PEEKDATA, pid_son, &i, NULL);
@@ -80,7 +77,6 @@ int main () {
       }
     } while (cont);
   }
-
 
   return 0;
 }

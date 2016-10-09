@@ -13,11 +13,14 @@ void handler (int x) {
   }
 }
 
-
+// Naive Fibonacci sequence. Takes a lot of time.
 int fibo (int n) {
   i += 1;
-  if (n==0 || n==1) { return 1;}
-  else { return fibo(n-1) + fibo(n-2); }
+  if (n==0 || n==1) {
+    return 1;
+  } else {
+    return fibo(n-1) + fibo(n-2);
+  }
 }
 
 int main () {
@@ -25,7 +28,7 @@ int main () {
   // Creating the sigaction
   struct sigaction act;
   act.sa_handler = handler;
-  
+
   if (sigaction(SIGALRM, &act, NULL) == -1) {
     perror ("error:");
     exit(1);
@@ -36,7 +39,6 @@ int main () {
 
   // Testing our handler
   fibo(43);
-
 
   return 0;
 }
