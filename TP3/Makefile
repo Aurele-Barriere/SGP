@@ -8,4 +8,4 @@ all : $(DEST)
 	$(CC) $^ -o $@ $(FLAGS)
 
 clean :
-	rm $(DEST) pipe
+	rm $(DEST)
