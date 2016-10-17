@@ -15,7 +15,7 @@ L'instruction MIPS `syscall` est alors appelée, ce qui déclenche l'appel de la
 
 4. Pas sûr de comprendre la question. Elle n'alloue pas les objets chaînés, et se content de pointeurs. Pourquoi -> parce qu'elles sont utilisés dans le noyau qui a sa propre gestion mémoire ? Parce qu'on ne veut pas copier des threads mais juste les organiser ?? **à vérifier**
 
-Comme expliqué dans utility/list.h, on ne désalloue pas les objets à l'intérieur des ListElements, on se contente de désallouer les ListElements. De manière générale, seuls les ListElements (qui contiennent un pointeur sur l'objet concerné) sont alloués/désalloués. On veut pouvoir créer une list d'objets puis supprimer la liste sans supprimer les objets? eviter copie profonde?
+Comme expliqué dans utility/list.h, on ne désalloue pas les objets à l'intérieur des ListElements, on se contente de désallouer les ListElements. De manière générale, seuls les ListElements (qui contiennent un pointeur sur l'objet concerné) sont alloués/désalloués. On veut pouvoir créer une list d'objets puis supprimer la liste sans supprimer les objets, pour pouvoir utiliser un même objet dans plusieurs listes sans avoir recours à une copie profonde.
 
 5. Un objet thread est placé **nulle part** quand il est bloqué par un sémaphore. C'est au sémaphore de le replacer sur la liste des processus prêts quand il est débloqué. (**à vérifier**)
 
