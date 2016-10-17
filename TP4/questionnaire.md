@@ -9,18 +9,21 @@ L'instruction MIPS `syscall` est alors appelée, ce qui déclenche l'appel de la
 
 1. Le rôle de ces deux fonctions est de sauvegarde et restorer l'état de tous les registres du processeur (**à l'exception des registres r2 r4 r5 r6 r7 qui sont utilisés dans les appels systèmes ????**)
 
-2. Le _scheduler_ contient une liste de tous les threads qui sont prêts à s'éxécuter : `readyList`. Cette liste ne contient pas le thread qui s'éxécute actuellement. Celui-ci est accessible grâce à la variable globale `g_current_thread` définie dans `system/kernel.cc` qui est un pointeur vers le thread actuel.
+Il faut sauvegarder l'état du processeur et celui du simulateur (cf question 7?), puisqu'on n'exécute pas le système d'exploitation directement sur une machine.
 
-3. La varialbe `g_alive` est une liste de tous les threads existants. Celle-ci peut contenir des threads n'étant pas prêts à s'éxécuter.
+2. Le _scheduler_ contient une liste de tous les threads qui sont prêts à s'éxécuter : `readyList`. Cette liste ne contient pas le thread qui s'éxécute actuellement. Celui-ci est accessible grâce à la variable globale `g_current_thread` définie dans `kernel/system.cc` qui est un pointeur vers le thread actuel.
+
+3. La varialbe `g_alive` est une liste globale de tous les threads existants. Contrairement à readyList, celle-ci peut contenir des threads n'étant pas prêts à s'éxécuter.
 
 4. Pas sûr de comprendre la question. Elle n'alloue pas les objets chaînés, et se content de pointeurs. Pourquoi -> parce qu'elles sont utilisés dans le noyau qui a sa propre gestion mémoire ? Parce qu'on ne veut pas copier des threads mais juste les organiser ?? **à vérifier**
 
 Comme expliqué dans utility/list.h, on ne désalloue pas les objets à l'intérieur des ListElements, on se contente de désallouer les ListElements. De manière générale, seuls les ListElements (qui contiennent un pointeur sur l'objet concerné) sont alloués/désalloués. On veut pouvoir créer une list d'objets puis supprimer la liste sans supprimer les objets, pour pouvoir utiliser un même objet dans plusieurs listes sans avoir recours à une copie profonde.
 
 5. Un objet thread est placé **nulle part** quand il est bloqué par un sémaphore. C'est au sémaphore de le replacer sur la liste des processus prêts quand il est débloqué. (**à vérifier**)
+avec la fonction void ReadyToRun(Thread *thread) définie dans kernel/scheduler.h
 
 6. Il faut appeller la fonction `g_machine->interrupt->SetStatus` avec pour paramètre `INTERRUPTS_OFF`. On se place ainsi dans un mode où les interruptions sont désactivées.
-Il faut bien sûr les réactiver ensuite avec la même fonction et le paramètre `INTERRUPTS_ON`.
+Il faut bien sûr les réactiver ensuite avec la même fonction et le paramètre `INTERRUPTS_ON`. (dans la fonction StartThread ou à l'initialisation. expliquer pourquoi?)
 
 7. Le _scheduler_ est défini dans les fichiers `kernel/scheduler.cc` et `kernel/scheduler.h`.
 Cette classe contient en particulier une méthode `void SwitchTo(Thread *nextThread)` qui effectue un changement de contexte.
