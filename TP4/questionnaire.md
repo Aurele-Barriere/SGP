@@ -28,8 +28,10 @@ Les méthodes `SaveProcessorState` et `RestoreProcessorState` devront quant à e
 
 8. Le champ `ObjectTypeId` de chaque objet permet de vérifier que les objets passés aux méthodes du noyau, sous forme de pointeurs, sont bien les objets attendus.
 
-
-
-
-
 ### Environnement de développement
+
+1. Hmmm
+
+2. Oui. Nachos s'éxécute directement sur notre PC. gdb peut y accéder facilement.
+
+3. Non. Les programmes sont executés à l'intérieur de la machine virtuelle Nachos. Il faudrait apprendre à gdb comment Nachos attribue la mémoire, gère les processus, etc.
