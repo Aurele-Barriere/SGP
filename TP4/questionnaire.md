@@ -30,7 +30,9 @@ Les méthodes `SaveProcessorState` et `RestoreProcessorState` devront quant à e
 
 ### Environnement de développement
 
-1. Hmmm
+1. On peut utiliser les options en ligne de commande de l'exécutable nachos. Par exemple, l'option -s lance une exécution pas à pas, avec affichage de l'état des registres entre chaque instruction.
+
+Cette version de Nachos contient également une alternative aux fonctions de la libc dans le dossier userlib. On y définit par exemple des fonctions sur les chaînes de caractères, sur les input/output etc.
 
 2. Oui. Nachos s'éxécute directement sur notre PC. gdb peut y accéder facilement.
 
