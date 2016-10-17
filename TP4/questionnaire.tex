@@ -20,16 +20,19 @@
 \def\obj#1{\texttt{#1}}
 \def\comment#1{\color{red}#1\color{black}}
 
+\def\gdb{\texttt{gdb}}
+\def\nachos{Nachos}
+
 \begin{document}
 \maketitle
 
-\section{Mécanisme d'appel système}
+\section*{Mécanisme d'appel système}
 
 Les programmes utilisateurs ont accès à un ensemble d'appels systèmes dont les définitions sont disponibles dans \pathfile{userlib/syscall.h}. Il suffit à l'utilisateur d'appeller une de ces procédures.
 L'instruction MIPS \func{syscall} est alors appelée, ce qui déclenche l'appel de la routine de traitement des exceptions \func{ExceptionHandler} située dans \pathfile{kernel/exception.cc}. Grâce à la valeur située dans le registre \var{r2}, la routine est capable de déterminer quel appel système a été effectué. Les paramètres sont eux situés dans les registres \var{r4}, \var{r5}, \var{r6} et \var{r7}.
 
 
-\section{Gestion de threads et de processus}
+\section*{Gestion de threads et de processus}
 \question{1} Le rôle de ces deux fonctions est de sauvegarde et restaurer l'état de tous les registres du processeur \comment{à l'exception des registres r2 r4 r5 r6 r7 qui sont utilisés dans les appels systèmes ????}
 
 Il faut sauvegarder l'état du processeur et celui du simulateur \comment{(cf question 7?)}, puisqu'on n'exécute pas le système d'exploitation directement sur une machine.
@@ -53,22 +56,22 @@ Il faut bien sûr les réactiver ensuite avec la même fonction et le paramètre
 
 Cette classe contient en particulier une méthode \func{void SwitchTo(Thread *nextThread)} qui effectue un changement de contexte.  
 
-Il est nécessaire de sauvegarder deux types de contextes à cause du fonctionnement de Nachos: le contexte noyau et le contexte utilisateur.  
+Il est nécessaire de sauvegarder deux types de contextes à cause du fonctionnement de \nachos: le contexte noyau et le contexte utilisateur.  
 Le contexte noyau est celui du simulateur, manipulé par \func{SaveSimulatorState} et \func{RestoreSimulatorState}.  
 Les méthodes \func{SaveProcessorState} et \func{RestoreProcessorState} devront quant à elles se charger de sauvegarder et restorer les registres du processeur.
 
 \question{8}  Le champ \var{ObjectTypeId} de chaque objet permet de vérifier que les objets passés aux méthodes du noyau, sous forme de pointeurs, sont bien les objets attendus.
 
-\section{Environnement de développement}
+\section*{Environnement de développement}
 \question{1} 
-Cette version de Nachos contient également une alternative aux fonctions de la \texttt{libc} dans le dossier \pathfile{userlib}. On y définit par exemple des fonctions sur les chaînes de caractères, sur les \textit{input/output} etc.
+Cette version de \nachos contient également une alternative aux fonctions de la \texttt{libc} dans le dossier \pathfile{userlib}. On y définit par exemple des fonctions sur les chaînes de caractères, sur les \textit{input/output} etc.
 
-On peut utiliser les options en ligne de commande de l'exécutable nachos. Par exemple, l'option \texttt{-s} lance une exécution pas à pas, avec affichage de l'état des registres entre chaque instruction.
+On peut utiliser les options en ligne de commande de l'exécutable \texttt{nachos}. Par exemple, l'option \texttt{-s} lance une exécution pas à pas, avec affichage de l'état des registres entre chaque instruction.
 
 
-\question{2} Oui. Nachos s'éxécute directement sur notre PC. gdb peut y accéder facilement.
+\question{2} Il est possible d'utiliser \gdb\ pour mettre au point le code de \nachos. \nachos\ est un processus qui s'éxécute directement sur notre machine (sans simulateur ni machine virtuelle). \gdb\ peut accéder facilement aux différentes variables du noyau.
 
-\question{3} Non. Les programmes sont executés à l'intérieur de la machine virtuelle Nachos. Il faudrait apprendre à gdb comment Nachos attribue la mémoire, gère les processus, etc.
+\question{3} Cependant, on ne peut pas utiliser \gdb\ pour mettre au point les programmes utilisateurs. Les programmes sont executés à l'intérieur de la machine virtuelle \nachos. Il faudrait apprendre à \gdb\ comment \nachos\ attribue la mémoire, gère les processus, etc.
 
 
 \end{document}
