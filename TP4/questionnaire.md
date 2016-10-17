@@ -7,8 +7,7 @@ L'instruction MIPS `syscall` est alors appelée, ce qui déclenche l'appel de la
 
 ### Gestion de threads et de processus
 
-1.
-Le rôle de ces deux fonctions est de sauvegarde et restorer l'état de tous les registres du processeur (**à l'exception des registres r2 r4 r5 r6 r7 qui sont utilisés dans les appels systèmes ????**)
+1. Le rôle de ces deux fonctions est de sauvegarde et restorer l'état de tous les registres du processeur (**à l'exception des registres r2 r4 r5 r6 r7 qui sont utilisés dans les appels systèmes ????**)
 
 2. Le _scheduler_ contient une liste de tous les threads qui sont prêts à s'éxécuter : `readyList`. Cette liste ne contient pas le thread qui s'éxécute actuellement. Celui-ci est accessible grâce à la variable globale `g_current_thread` définie dans `system/kernel.cc` qui est un pointeur vers le thread actuel.
 
