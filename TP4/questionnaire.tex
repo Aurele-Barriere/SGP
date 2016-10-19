@@ -34,7 +34,7 @@ L'instruction MIPS \func{syscall} est alors appelée, ce qui déclenche l'appel 
 
 
 \section*{Gestion de threads et de processus}
-\question{1} Il est nécessaire de sauvegarder l'état de tous les registres du processeur, ce qui permet de les restaurer lors du retour à l'éxécution du thread.
+\question{1} Il est nécessaire de sauvegarder l'état de tous les registres du processeur, ce qui permet de les restaurer lors du retour à l'éxécution du thread. Il faut également sauvegarder l'état du simulateur, puisqu'on n'exécute pas le système d'exploitation directement sur une machine.
 
 \question{2} Le \obj{scheduler} contient une liste de tous les threads qui sont prêts à s'éxécuter : \var{readyList}. Cette liste ne contient pas le thread qui s'éxécute actuellement. Celui-ci est accessible grâce à la variable globale \var{g\_current\_thread} définie dans \pathfile{kernel/system.cc} qui est un pointeur vers le thread actuel.
 
