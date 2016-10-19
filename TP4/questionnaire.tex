@@ -47,7 +47,7 @@ Comme expliqué dans \pathfile{utility/list.h}, on ne désalloue pas les objets 
 
 \comment{Pas sûr de comprendre la question. Elle n'alloue pas les objets chaînés, et se content de pointeurs. Pourquoi -> parce qu'elles sont utilisés dans le noyau qui a sa propre gestion mémoire ? Parce qu'on ne veut pas copier des threads mais juste les organiser ?? **à vérifier**  }
 
-\question{5} Un objet thread est placé \comment{nulle part} quand il est bloqué par un sémaphore. C'est au sémaphore de le replacer sur la liste des processus prêts quand il est débloqué. \comment{à vérifier} avec la fonction \func{void ReadyToRun(Thread *thread)} définie dans \pathfile{kernel/scheduler.h}. Il se trouve cependant toujours dans la liste \var{g\_alive}.
+\question{5} Quand il est bloqué par un sémaphore, un objet thread est placé dans le champ \var{queue} du sémaphore. C'est au sémaphore de le replacer sur la liste des processus prêts quand il est débloqué avec la fonction \func{void ReadyToRun(Thread *thread)} définie dans \pathfile{kernel/scheduler.h}. Il se trouve toujours dans la liste \var{g\_alive} (mais pas dans \var{readyList}).
 
 \question{6} Il faut appeller la fonction \func{g\_machine->interrupt->SetStatus} avec pour paramètre \var{INTERRUPTS\_OFF}. On se place ainsi dans un mode où les interruptions sont désactivées.  
 
