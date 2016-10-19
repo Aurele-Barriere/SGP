@@ -34,31 +34,27 @@ L'instruction MIPS \func{syscall} est alors appelée, ce qui déclenche l'appel 
 
 
 \section*{Gestion de threads et de processus}
-\question{1} Le rôle de ces deux fonctions est de sauvegarde et restaurer l'état de tous les registres du processeur \comment{à l'exception des registres r2 r4 r5 r6 r7 qui sont utilisés dans les appels systèmes ???? -> je ne crois pas}
-
-Il faut sauvegarder l'état du processeur et celui du simulateur \comment{(cf question 7?)}, puisqu'on n'exécute pas le système d'exploitation directement sur une machine.
+\question{1} Il est nécessaire de sauvegarder l'état de tous les registres du processeur, ce qui permet de les restaurer lors du retour à l'éxécution du thread.
 
 \question{2} Le \obj{scheduler} contient une liste de tous les threads qui sont prêts à s'éxécuter : \var{readyList}. Cette liste ne contient pas le thread qui s'éxécute actuellement. Celui-ci est accessible grâce à la variable globale \var{g\_current\_thread} définie dans \pathfile{kernel/system.cc} qui est un pointeur vers le thread actuel.
 
-\question{3} La varialbe \var{g\_alive} est une liste globale de tous les threads existants définie dans \pathfile{kernel/system.c}. Contrairement à \var{readyList}, celle-ci peut contenir des threads n'étant pas prêts à s'éxécuter.
+\question{3} La varialbe \var{g\_alive} est une liste globale de tous les threads existants définie dans \pathfile{kernel/system.cc}. Contrairement à \var{readyList}, celle-ci peut contenir des threads n'étant pas prêts à s'éxécuter.
 
-\question{4} 
-Comme expliqué dans \pathfile{utility/list.h}, on ne désalloue pas les objets à l'intérieur des \obj{ListElements}, on se contente de désallouer les \obj{ListElements}. De manière générale, seuls les \obj{ListElements} (qui contiennent un pointeur sur l'objet concerné) sont alloués/désalloués. On veut pouvoir créer une liste d'objets puis supprimer la liste sans supprimer les objets, pour pouvoir utiliser un même objet dans plusieurs listes sans avoir recours à une copie profonde.
-
-\comment{Pas sûr de comprendre la question. Elle n'alloue pas les objets chaînés, et se content de pointeurs. Pourquoi -> parce qu'elles sont utilisés dans le noyau qui a sa propre gestion mémoire ? Parce qu'on ne veut pas copier des threads mais juste les organiser ?? **à vérifier**  }
+\question{4}
+Comme expliqué dans \pathfile{utility/list.h}, on ne désalloue pas les objets à l'intérieur des \obj{ListElements}, on se contente de désallouer les \obj{ListElements}. De manière générale, seuls les \obj{ListElements} (qui contiennent un pointeur sur l'objet concerné) sont alloués/désalloués. On veut pouvoir créer une liste d'objets puis supprimer la liste sans supprimer les objets, pour pouvoir utiliser un même objet dans plusieurs listes sans avoir recours à une copie profonde. En effet, cela pourrait être désastreux au niveau des performances.
 
 \question{5} Quand il est bloqué par un sémaphore, un objet thread est placé dans le champ \var{queue} du sémaphore. C'est au sémaphore de le replacer sur la liste des processus prêts quand il est débloqué avec la fonction \func{void ReadyToRun(Thread *thread)} définie dans \pathfile{kernel/scheduler.h}. Il se trouve toujours dans la liste \var{g\_alive} (mais pas dans \var{readyList}).
 
-\question{6} Il faut appeller la fonction \func{g\_machine->interrupt->SetStatus} avec pour paramètre \var{INTERRUPTS\_OFF}. On se place ainsi dans un mode où les interruptions sont désactivées.  
+\question{6} Il faut appeller la fonction \func{g\_machine->interrupt->SetStatus} avec pour paramètre \var{INTERRUPTS\_OFF}. On se place ainsi dans un mode où les interruptions sont désactivées.
 
 Il faut bien sûr les réactiver ensuite avec la même fonction et le paramètre \var{INTERRUPTS\_ON}.
 
 \question{7}  Le \obj{scheduler} est défini dans les fichiers \pathfile{kernel/scheduler.cc} et \pathfile{kernel/scheduler.h}.
 
-Cette classe contient en particulier une méthode \func{void SwitchTo(Thread *nextThread)} qui effectue un changement de contexte.  
+Cette classe contient en particulier une méthode \func{void SwitchTo(Thread *nextThread)} qui effectue un changement de contexte.
 
-Il est nécessaire de sauvegarder deux types de contextes à cause du fonctionnement de \nachos: le contexte noyau et le contexte utilisateur.  
-Le contexte noyau est celui du simulateur, manipulé par \func{SaveSimulatorState} et \func{RestoreSimulatorState}.  
+Il est nécessaire de sauvegarder deux types de contextes à cause du fonctionnement de \nachos: le contexte noyau et le contexte utilisateur.
+Le contexte noyau est celui du simulateur, manipulé par \func{SaveSimulatorState} et \func{RestoreSimulatorState}.
 Les méthodes \func{SaveProcessorState} et \func{RestoreProcessorState} devront quant à elles se charger de sauvegarder et restorer les registres du processeur.
 
 \question{8}  Le champ \var{ObjectTypeId} de chaque objet permet de vérifier que les objets passés aux méthodes du noyau, sous forme de pointeurs, sont bien les objets attendus (par exemple pour vérifier qu'une fonction attendant un sémaphore ait bien en argument un pointeur sur un sémaphore).
@@ -66,7 +62,7 @@ Les méthodes \func{SaveProcessorState} et \func{RestoreProcessorState} devront 
 Par exemple, dans la fonction \func{ExceptionHandler} définie dans \pathfile{kernel/exceptions.cc}, si une exception est reçue pour fermer le \textit{thread} courant, on vérifie le type de la variable globale \var{g\_current\_thread} avant d'appeler sa méthode \func{Finish()}.
 
 \section*{Environnement de développement}
-\question{1} 
+\question{1}
 Cette version de \nachos\ contient également une alternative aux fonctions de la \texttt{libc} dans le dossier \pathfile{userlib}. On y définit par exemple des fonctions sur les chaînes de caractères, sur les \textit{input/output} etc.
 
 On peut utiliser les options en ligne de commande de l'exécutable \texttt{nachos}. Par exemple, l'option \texttt{-s} lance une exécution pas à pas, avec affichage de l'état des registres entre chaque instruction. L'option \texttt{-d} permet également d'afficher les messages de déboguage voulus.
@@ -75,6 +71,5 @@ On peut utiliser les options en ligne de commande de l'exécutable \texttt{nacho
 \question{2} Il est possible d'utiliser \gdb\ pour mettre au point le code de \nachos. \nachos\ est un processus qui s'éxécute directement sur notre machine (sans simulateur ni machine virtuelle). \gdb\ peut accéder facilement aux différentes variables du noyau.
 
 \question{3} Cependant, on ne peut pas utiliser \gdb\ pour mettre au point les programmes utilisateurs. Les programmes sont executés à l'intérieur de la machine virtuelle \nachos. Il faudrait apprendre à \gdb\ comment \nachos\ attribue la mémoire, gère les processus, etc.
-
 
 \end{document}
