@@ -34,7 +34,7 @@ L'instruction MIPS \func{syscall} est alors appelée, ce qui déclenche l'appel 
 
 
 \section*{Gestion de threads et de processus}
-\question{1} Le rôle de ces deux fonctions est de sauvegarde et restaurer l'état de tous les registres du processeur \comment{à l'exception des registres r2 r4 r5 r6 r7 qui sont utilisés dans les appels systèmes ????}
+\question{1} Le rôle de ces deux fonctions est de sauvegarde et restaurer l'état de tous les registres du processeur \comment{à l'exception des registres r2 r4 r5 r6 r7 qui sont utilisés dans les appels systèmes ???? -> je ne crois pas}
 
 Il faut sauvegarder l'état du processeur et celui du simulateur \comment{(cf question 7?)}, puisqu'on n'exécute pas le système d'exploitation directement sur une machine.
 
@@ -63,11 +63,13 @@ Les méthodes \func{SaveProcessorState} et \func{RestoreProcessorState} devront 
 
 \question{8}  Le champ \var{ObjectTypeId} de chaque objet permet de vérifier que les objets passés aux méthodes du noyau, sous forme de pointeurs, sont bien les objets attendus (par exemple pour vérifier qu'une fonction attendant un sémaphore ait bien en argument un pointeur sur un sémaphore).
 
+Par exemple, dans la fonction \func{ExceptionHandler} définie dans \pathfile{kernel/exceptions.cc}, si une exception est reçue pour fermer le \textit{thread} courant, on vérifie le type de la variable globale \var{g\_current\_thread} avant d'appeler sa méthode \func{Finish()}.
+
 \section*{Environnement de développement}
 \question{1} 
 Cette version de \nachos\ contient également une alternative aux fonctions de la \texttt{libc} dans le dossier \pathfile{userlib}. On y définit par exemple des fonctions sur les chaînes de caractères, sur les \textit{input/output} etc.
 
-On peut utiliser les options en ligne de commande de l'exécutable \texttt{nachos}. Par exemple, l'option \texttt{-s} lance une exécution pas à pas, avec affichage de l'état des registres entre chaque instruction.
+On peut utiliser les options en ligne de commande de l'exécutable \texttt{nachos}. Par exemple, l'option \texttt{-s} lance une exécution pas à pas, avec affichage de l'état des registres entre chaque instruction. L'option \texttt{-d} permet également d'afficher les messages de déboguage voulus.
 
 
 \question{2} Il est possible d'utiliser \gdb\ pour mettre au point le code de \nachos. \nachos\ est un processus qui s'éxécute directement sur notre machine (sans simulateur ni machine virtuelle). \gdb\ peut accéder facilement aux différentes variables du noyau.
