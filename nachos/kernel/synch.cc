@@ -170,8 +170,30 @@ void Lock::Acquire() {
 */
 //----------------------------------------------------------------------
 void Lock::Release() {
-    printf("**** Warning: method Lock::Release is not implemented yet\n");
-    exit(-1);
+#ifndef ETUDIANTS_TP
+  printf("**** Warning: method Lock::Release is not implemented yet\n");
+  exit(-1);
+#endif
+#ifdef ETUDIANTS_TP
+  // disable interrupts
+  IntStatus status = g_machine->interrupt->SetStatus(INTERRUPTS_OFF);
+
+  // Waking up next process if needed
+  if (isHeldByCurrentThread()) {
+    if (sleepqueue->IsEmpty()) {
+      free = true;
+    } else {
+      owner = (Thread *)(sleepqueue->Remove());
+      g_scheduler->ReadyToRun(owner);
+    }
+  } else {
+    // we do nothing: a thread can't unlock a lock it doesn't own
+  }
+    
+  //restoring interrupts
+  g_machine->interrupt->SetStatus(status);
+
+#endif
 }
 
 //----------------------------------------------------------------------
