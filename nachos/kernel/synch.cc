@@ -126,7 +126,7 @@ Lock::~Lock() {
 
 //----------------------------------------------------------------------
 // Lock::Acquire
-/*! 	Wait until the lock become free.  Checking the
+/*! 	Wait until the lock becomes free.  Checking the
 //	state of the lock (free or busy) and modify it must be done
 //	atomically, so we need to disable interrupts before checking
 //	the value of free.
@@ -136,8 +136,28 @@ Lock::~Lock() {
 */
 //----------------------------------------------------------------------
 void Lock::Acquire() {
-   printf("**** Warning: method Lock::Acquire is not implemented yet\n");
-    exit(-1);
+#ifndef ETUDIANTS_TP
+  printf("**** Warning: method Lock::Acquire is not implemented yet\n");
+  exit(-1);
+#endif
+#ifdef ETUDIANTS_TP
+
+  // disable interrupts
+  IntStatus status = g_machine->interrupt->SetStatus(INTERRUPTS_OFF);
+  if (free) {
+    owner = g_current_thread;
+    free = false;
+  } else {
+    sleepqueue->Prepend(g_current_thread);
+    g_current_thread->Sleep();
+  }
+    
+  
+  //restoring interrupts
+  g_machine->interrupt->SetStatus(status);
+
+  
+#endif
 }
 
 //----------------------------------------------------------------------
