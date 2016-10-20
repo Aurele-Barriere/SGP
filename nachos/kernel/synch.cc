@@ -76,8 +76,25 @@ Semaphore::~Semaphore()
 //----------------------------------------------------------------------
 void
 Semaphore::P() {
+#ifndef ETUDIANTS_TP
   printf("**** Warning: method Semaphore::P is not implemented yet\n");
   exit(-1);
+#endif
+#ifdef ETUDIANTS_TP
+  // disable interrupts
+  IntStatus status = g_machine->interrupt->SetStatus(INTERRUPTS_OFF);
+  
+  if (value > 0) {
+    value --;
+  } else {
+    queue->Prepend(g_current_thread);
+    g_current_thread->Sleep();
+  }
+  
+  // restore interrupts
+  g_machine->interrupt->SetStatus(status);
+  
+#endif
 }
 
 //----------------------------------------------------------------------
