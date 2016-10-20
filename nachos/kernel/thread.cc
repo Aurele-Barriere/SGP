@@ -118,6 +118,7 @@ int Thread::Start(Process *owner,
   process = owner; // attach to owner context
   owner -> numThreads ++;
   InitThreadContext(func, owner->addrspace->StackAllocate(), arg);
+  InitSimulatorContext(AllocBoundedArray(SIMULATORSTACKSIZE), SIMULATORSTACKSIZE);
   g_alive->Prepend(this); // add the thread to the list of all threads
   g_scheduler->ReadyToRun(this); // add the thread to the readyList of g_scheduler
 
