@@ -1,0 +1,14 @@
+*.d
+*.o
+*.a
+*~
+nachos/nachos
+nachos/test/halt
+nachos/test/hello
+nachos/test/matmult
+nachos/test/shell
+nachos/test/sort
+nachos/test/rdv3threads
+nachos/DISK
+nachos/SWAPDISK
+*.tar.gz

@@ -102,9 +102,34 @@ Thread::~Thread()
 int Thread::Start(Process *owner,
 		  int32_t func, int arg)
 {
+
+#ifndef ETUDIANTS_TP
   ASSERT(process == NULL);
   printf("**** Warning: method Thread::Start is not implemented yet\n");
   exit(-1);
+#endif
+  
+#ifdef ETUDIANTS_TP
+  int success = 1;
+  // checking that we're not starting an already started thread
+  if (process != NULL) {success = 0; }
+
+  
+  process = owner; // attach to owner context
+  owner -> numThreads ++;
+  InitThreadContext(func, owner->addrspace->StackAllocate(), arg);
+  g_alive->Prepend(this); // add the thread to the list of all threads
+  g_scheduler->ReadyToRun(this); // add the thread to the readyList of g_scheduler
+
+  if (success) {
+    return NoError;
+  } else {
+    return IncError;
+  }
+  
+#endif
+  
+
 }
 
 //----------------------------------------------------------------------
