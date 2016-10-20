@@ -378,8 +378,13 @@ Thread::Sleep ()
 void
 Thread::SaveProcessorState()
 {
+#ifndef ETUDIANTS_TP
   printf("**** Warning: method Thread::SaveProcessorState is not implemented yet\n");
   exit(-1);
+#endif
+#ifdef ETUDIANTS_TP
+  
+#endif
 }
 
 //----------------------------------------------------------------------
