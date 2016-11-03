@@ -12,3 +12,5 @@ nachos/test/rdv3threads
 nachos/DISK
 nachos/SWAPDISK
 *.tar.gz
+nachos/doxygen_sqlite3.db
+nachos/html

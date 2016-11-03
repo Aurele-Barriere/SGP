@@ -1,0 +1,7 @@
+TP1 de SGP
+Aurèle Barrière et Jérémy Thibault
+
+Voici le rapport sur le premier TP.
+
+Nous avons tout implémenté et les programmes fonctionnent bien.
+En particulier, nous avons essayé de ne pas oublier de fermer chaque fichier ouvert.
