@@ -279,14 +279,24 @@ Thread::CheckOverflow()
 void
 Thread::Finish ()
 {
-
-    DEBUG('t', (char *)"Finishing thread \"%s\"\n", GetName());
+#ifndef ETUDIANTS_TP
+  DEBUG('t', (char *)"Finishing thread \"%s\"\n", GetName());
  
     
   printf("**** Warning: method Thread::Finish is not fully implemented yet\n");
 
   // Go to sleep
   Sleep();  // invokes SWITCH
+#endif
+#ifdef ETUDIANTS_TP
+  IntStatus oldLevel = g_machine->interrupt->SetStatus(INTERRUPTS_OFF);
+
+  g_thread_to_be_destroyed = this;
+  // Go to sleep
+  Sleep();  // invokes SWITCH
+  
+  g_machine->interrupt->SetStatus(oldLevel);
+#endif
 
  }
 
@@ -396,8 +406,13 @@ Thread::SaveProcessorState()
 void
 Thread::RestoreProcessorState()
 {
+#ifndef ETUDIANTS_TP
   printf("**** Warning: method Thread::RestoreProcessorState is not implemented yet\n");
   exit(-1);
+#endif
+#ifdef ETUDIANTS_TP
+  
+#endif
 }
 
 //----------------------------------------------------------------------
