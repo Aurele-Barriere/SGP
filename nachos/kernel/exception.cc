@@ -637,8 +637,8 @@ void ExceptionHandler(ExceptionType exceptiontype, int vaddr)
 
       // Get the semaphore if it exists
       Semaphore* s = (Semaphore*) g_object_ids->SearchObject(sid);
-
-      if (s != NULL) {
+      
+      if (s != NULL && s->typeId == SEMAPHORE_TYPE_ID) {
 	s->P();
 	g_machine->WriteIntRegister(2,0); // success
       } else {
@@ -654,7 +654,7 @@ void ExceptionHandler(ExceptionType exceptiontype, int vaddr)
       // Get the semaphore if it exists
       Semaphore* s = (Semaphore*) g_object_ids->SearchObject(sid);
 
-      if (s != NULL) {
+      if (s != NULL && s->typeId == SEMAPHORE_TYPE_ID) {
 	s->V();
 	g_machine->WriteIntRegister(2,0); // success
       } else {
@@ -682,7 +682,7 @@ void ExceptionHandler(ExceptionType exceptiontype, int vaddr)
       // Get the semaphore if it exists
       Semaphore* s = (Semaphore*) g_object_ids->SearchObject(sid);
 
-      if (s != NULL) {
+      if (s != NULL && s->typeId == SEMAPHORE_TYPE_ID) {
         delete s;
 	g_machine->WriteIntRegister(2,0); // success
       } else {
@@ -708,7 +708,7 @@ void ExceptionHandler(ExceptionType exceptiontype, int vaddr)
       // Get the lock if it exists
       Lock* l = (Lock*) g_object_ids->SearchObject(lid);
 
-      if (l != NULL) {
+      if (l != NULL && l->typeId == LOCK_TYPE_ID) {
         delete l;
 	g_machine->WriteIntRegister(2,0); // success
       } else {
@@ -724,7 +724,7 @@ void ExceptionHandler(ExceptionType exceptiontype, int vaddr)
       // Get the lock if it exists
       Lock* l = (Lock*) g_object_ids->SearchObject(lid);
 
-      if (l != NULL) {
+      if (l != NULL && l->typeId == LOCK_TYPE_ID) {
         l->Acquire();
 	g_machine->WriteIntRegister(2,0); // success
       } else {
@@ -740,7 +740,7 @@ void ExceptionHandler(ExceptionType exceptiontype, int vaddr)
       // Get the lock if it exists
       Lock* l = (Lock*) g_object_ids->SearchObject(lid);
 
-      if (l != NULL) {
+      if (l != NULL && l->typeId == LOCK_TYPE_ID) {
         l->Release();
 	g_machine->WriteIntRegister(2,0); // success
       } else {
@@ -766,7 +766,7 @@ void ExceptionHandler(ExceptionType exceptiontype, int vaddr)
       // Get the lock if it exists
       Condition* c = (Condition*) g_object_ids->SearchObject(cid);
 
-      if (c != NULL) {
+      if (c != NULL && c->typeId == CONDITION_TYPE_ID) {
         delete c;
 	g_machine->WriteIntRegister(2,0); // success
       } else {
@@ -782,7 +782,7 @@ void ExceptionHandler(ExceptionType exceptiontype, int vaddr)
       // Get the lock if it exists
       Condition* c = (Condition*) g_object_ids->SearchObject(cid);
 
-      if (c != NULL) {
+      if (c != NULL && c->typeId == CONDITION_TYPE_ID) {
         c->Wait();
 	g_machine->WriteIntRegister(2,0); // success
       } else {
@@ -797,7 +797,7 @@ void ExceptionHandler(ExceptionType exceptiontype, int vaddr)
       // Get the lock if it exists
       Condition* c = (Condition*) g_object_ids->SearchObject(cid);
 
-      if (c != NULL) {
+      if (c != NULL && c->typeId == CONDITION_TYPE_ID) {
         c->Signal();
 	g_machine->WriteIntRegister(2,0); // success
       } else {
@@ -813,7 +813,7 @@ void ExceptionHandler(ExceptionType exceptiontype, int vaddr)
       // Get the lock if it exists
       Condition* c = (Condition*) g_object_ids->SearchObject(cid);
 
-      if (c != NULL) {
+      if (c != NULL && c->typeId == CONDITION_TYPE_ID) {
         c->Broadcast();
 	g_machine->WriteIntRegister(2,0); // success
       } else {
