@@ -628,7 +628,106 @@ void ExceptionHandler(ExceptionType exceptiontype, int vaddr)
 	  }
 	  break;
 	}
+#ifndef ETUDIANTS_TP
+#endif
+#ifdef ETUDIANTS_TP
+    case SC_P:{
+      // Get the argument in r4 : id of the semaphore
+      int sid = g_machine->ReadIntRegister(4);
 
+      // Get the semaphore if it exists
+      Semaphore* s = (Semaphore*) g_object_ids->SearchObject(sid);
+
+      if (s != NULL) {
+	s->P();
+	g_machine->WriteIntRegister(2,0); // success
+      } else {
+	g_machine->WriteIntRegister(2,-1); // failure
+      }      
+      break;
+    }
+      
+    case SC_V:{
+      // Get the argument in r4 : id of the semaphore
+      int sid = g_machine->ReadIntRegister(4);
+
+      // Get the semaphore if it exists
+      Semaphore* s = (Semaphore*) g_object_ids->SearchObject(sid);
+
+      if (s != NULL) {
+	s->V();
+	g_machine->WriteIntRegister(2,0); // success
+      } else {
+	g_machine->WriteIntRegister(2,-1); // failure
+      }      
+      break;     
+    }
+      
+    case SC_SEM_CREATE:{
+      // Get the argument in r4 : initial value of the semaphore
+      int init = g_machine->ReadIntRegister(4);
+      // Create the semaphore
+      Semaphore* s = new Semaphore((char*) "semaphore",init);
+      // Add object to the global list of objects
+      int32_t sid = g_object_ids->AddObject(s);
+      // Write the result in the second register
+      g_machine->WriteIntRegister(2,sid);	
+      break;
+    }
+      
+    case SC_SEM_DESTROY:{
+      // Get the argument in r4 : id of the semaphore
+      int sid = g_machine->ReadIntRegister(4);
+
+      // Get the semaphore if it exists
+      Semaphore* s = (Semaphore*) g_object_ids->SearchObject(sid);
+
+      if (s != NULL) {
+        delete s;
+	g_machine->WriteIntRegister(2,0); // success
+      } else {
+	g_machine->WriteIntRegister(2,-1); // failure
+      }      
+      break;
+    }
+      
+    case SC_LOCK_CREATE:{
+
+      break;
+    }
+    case SC_LOCK_DESTROY:{
+
+      break;
+    }
+    case SC_LOCK_ACQUIRE:{
+
+      break;
+    }
+    case SC_LOCK_RELEASE:{
+      
+      break;
+    }
+    case SC_COND_CREATE:{
+
+      break;
+    }
+    case SC_COND_DESTROY:{
+
+      break;
+    }
+    case SC_COND_WAIT:{
+
+      break;
+    }
+    case SC_COND_SIGNAL:{
+
+      break;
+    }
+    case SC_COND_BROADCAST:{
+
+      break;
+    }
+#endif
        default:
          printf("Invalid system call number : %d\n", type);
          exit(-1);
