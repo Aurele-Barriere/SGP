@@ -272,9 +272,21 @@ Condition::~Condition() {
 //  This operation must be atomic, so we need to disable interrupts.
 */	
 //----------------------------------------------------------------------
-void Condition::Wait() { 
-    printf("**** Warning: method Condition::Wait is not implemented yet\n");
-    exit(-1);
+void Condition::Wait() {
+#ifndef ETUDIANTS_TP
+  printf("**** Warning: method Condition::Wait is not implemented yet\n");
+  exit(-1);
+#endif
+#ifdef ETUDIANTS_TP
+  // disable interrupts
+  IntStatus status = g_machine->interrupt->SetStatus(INTERRUPTS_OFF);
+  
+  waitqueue->Prepend(g_current_thread);
+  g_current_thread->Sleep();
+  
+  // restore interrupts
+  g_machine->interrupt->SetStatus(status);
+#endif
 }
 
 //----------------------------------------------------------------------
@@ -284,9 +296,25 @@ void Condition::Wait() {
 // This operation must be atomic, so we need to disable interrupts.
 */
 //----------------------------------------------------------------------
-void Condition::Signal() { 
-    printf("**** Warning: method Condition::Signal is not implemented yet\n");
-    exit(-1);
+void Condition::Signal() {
+#ifndef ETUDIANTS_TP
+  printf("**** Warning: method Condition::Signal is not implemented yet\n");
+  exit(-1);
+#endif
+#ifdef ETUDIANTS_TP
+     // disable interrupts
+   IntStatus status = g_machine->interrupt->SetStatus(INTERRUPTS_OFF);
+
+   // Wakes up next process if there is one
+   if (waitqueue->IsEmpty()) {
+   } else {
+     Thread * next_thread = (Thread *) (waitqueue->Remove());
+     g_scheduler->ReadyToRun(next_thread);
+   }
+   
+   // restoring interrupts
+   g_machine->interrupt->SetStatus(status);
+#endif
 }
 
 //----------------------------------------------------------------------
@@ -295,7 +323,20 @@ void Condition::Signal() {
 // This operation must be atomic, so we need to disable interrupts.
 */
 //----------------------------------------------------------------------
-void Condition::Broadcast() { 
+void Condition::Broadcast() {
+#ifndef ETUDIANTS_TP
   printf("**** Warning: method Condition::Broadcast is not implemented yet\n");
   exit(-1);
+#endif
+#ifdef ETUDIANTS_TP
+  // disable interrupts
+  IntStatus status = g_machine->interrupt->SetStatus(INTERRUPTS_OFF);
+  
+  while (!waitqueue->IsEmpty()) {
+    Signal();
+  }
+
+  // restoring interrupts
+  g_machine->interrupt->SetStatus(status);
+#endif
 }

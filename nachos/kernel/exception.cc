@@ -628,7 +628,200 @@ void ExceptionHandler(ExceptionType exceptiontype, int vaddr)
 	  }
 	  break;
 	}
+#ifndef ETUDIANTS_TP
+#endif
+#ifdef ETUDIANTS_TP
+    case SC_P:{
+      // Get the argument in r4 : id of the semaphore
+      int sid = g_machine->ReadIntRegister(4);
 
+      // Get the semaphore if it exists
+      Semaphore* s = (Semaphore*) g_object_ids->SearchObject(sid);
+      
+      if (s != NULL && s->typeId == SEMAPHORE_TYPE_ID) {
+	s->P();
+	g_machine->WriteIntRegister(2,0); // success
+      } else {
+	g_machine->WriteIntRegister(2,-1); // failure
+      }      
+      break;
+    }
+      
+    case SC_V:{
+      // Get the argument in r4 : id of the semaphore
+      int sid = g_machine->ReadIntRegister(4);
+
+      // Get the semaphore if it exists
+      Semaphore* s = (Semaphore*) g_object_ids->SearchObject(sid);
+
+      if (s != NULL && s->typeId == SEMAPHORE_TYPE_ID) {
+	s->V();
+	g_machine->WriteIntRegister(2,0); // success
+      } else {
+	g_machine->WriteIntRegister(2,-1); // failure
+      }      
+      break;     
+    }
+      
+    case SC_SEM_CREATE:{
+      // Get the argument in r4 : initial value of the semaphore
+      int init = g_machine->ReadIntRegister(4);
+      // Create the semaphore
+      Semaphore* s = new Semaphore((char*) "semaphore",init);
+      // Add object to the global list of objects
+      int32_t sid = g_object_ids->AddObject(s);
+      // Write the result in the second register
+      g_machine->WriteIntRegister(2,sid);	
+      break;
+    }
+      
+    case SC_SEM_DESTROY:{
+      // Get the argument in r4 : id of the semaphore
+      int sid = g_machine->ReadIntRegister(4);
+
+      // Get the semaphore if it exists
+      Semaphore* s = (Semaphore*) g_object_ids->SearchObject(sid);
+
+      if (s != NULL && s->typeId == SEMAPHORE_TYPE_ID) {
+        delete s;
+	g_machine->WriteIntRegister(2,0); // success
+      } else {
+	g_machine->WriteIntRegister(2,-1); // failure
+      }      
+      break;
+    }
+      
+    case SC_LOCK_CREATE:{
+      // Create the lock
+      Lock* l = new Lock((char*) "Lock");
+      // Add object to the global list of objects
+      int32_t lid = g_object_ids->AddObject(l);
+      // Write the result in the second register
+      g_machine->WriteIntRegister(2,lid);	
+      break;
+    }
+      
+    case SC_LOCK_DESTROY:{
+      // Get the argument in r4 : id of the lock
+      int lid = g_machine->ReadIntRegister(4);
+
+      // Get the lock if it exists
+      Lock* l = (Lock*) g_object_ids->SearchObject(lid);
+
+      if (l != NULL && l->typeId == LOCK_TYPE_ID) {
+        delete l;
+	g_machine->WriteIntRegister(2,0); // success
+      } else {
+	g_machine->WriteIntRegister(2,-1); // failure
+      }      
+      break;
+    }
+      
+    case SC_LOCK_ACQUIRE:{
+      // Get the argument in r4 : id of the lock
+      int lid = g_machine->ReadIntRegister(4);
+
+      // Get the lock if it exists
+      Lock* l = (Lock*) g_object_ids->SearchObject(lid);
+
+      if (l != NULL && l->typeId == LOCK_TYPE_ID) {
+        l->Acquire();
+	g_machine->WriteIntRegister(2,0); // success
+      } else {
+	g_machine->WriteIntRegister(2,-1); // failure
+      }
+      break;
+    }
+      
+    case SC_LOCK_RELEASE:{
+      // Get the argument in r4 : id of the lock
+      int lid = g_machine->ReadIntRegister(4);
+
+      // Get the lock if it exists
+      Lock* l = (Lock*) g_object_ids->SearchObject(lid);
+
+      if (l != NULL && l->typeId == LOCK_TYPE_ID) {
+        l->Release();
+	g_machine->WriteIntRegister(2,0); // success
+      } else {
+	g_machine->WriteIntRegister(2,-1); // failure
+      }
+      break;
+    }
+      
+    case SC_COND_CREATE:{
+      // Create the condition variable
+      Condition* c = new Condition((char*) "Cond variable");
+      // Add object to the global list of objects
+      int32_t cid = g_object_ids->AddObject(c);
+      // Write the result in the second register
+      g_machine->WriteIntRegister(2,cid);
+      break;
+    }
+      
+    case SC_COND_DESTROY:{
+      // Get the argument in r4 : id of the cond
+      int cid = g_machine->ReadIntRegister(4);
+
+      // Get the lock if it exists
+      Condition* c = (Condition*) g_object_ids->SearchObject(cid);
+
+      if (c != NULL && c->typeId == CONDITION_TYPE_ID) {
+        delete c;
+	g_machine->WriteIntRegister(2,0); // success
+      } else {
+	g_machine->WriteIntRegister(2,-1); // failure
+      }
+      break;
+    }
+      
+    case SC_COND_WAIT:{
+      // Get the argument in r4 : id of the cond
+      int cid = g_machine->ReadIntRegister(4);
+
+      // Get the lock if it exists
+      Condition* c = (Condition*) g_object_ids->SearchObject(cid);
+
+      if (c != NULL && c->typeId == CONDITION_TYPE_ID) {
+        c->Wait();
+	g_machine->WriteIntRegister(2,0); // success
+      } else {
+	g_machine->WriteIntRegister(2,-1); // failure
+      }
+      break;
+    }
+    case SC_COND_SIGNAL:{
+      // Get the argument in r4 : id of the cond
+      int cid = g_machine->ReadIntRegister(4);
+
+      // Get the lock if it exists
+      Condition* c = (Condition*) g_object_ids->SearchObject(cid);
+
+      if (c != NULL && c->typeId == CONDITION_TYPE_ID) {
+        c->Signal();
+	g_machine->WriteIntRegister(2,0); // success
+      } else {
+	g_machine->WriteIntRegister(2,-1); // failure
+      }
+      break;
+    }
+      
+    case SC_COND_BROADCAST:{
+      // Get the argument in r4 : id of the cond
+      int cid = g_machine->ReadIntRegister(4);
+
+      // Get the lock if it exists
+      Condition* c = (Condition*) g_object_ids->SearchObject(cid);
+
+      if (c != NULL && c->typeId == CONDITION_TYPE_ID) {
+        c->Broadcast();
+	g_machine->WriteIntRegister(2,0); // success
+      } else {
+	g_machine->WriteIntRegister(2,-1); // failure
+      }
+      break;
+    }
+#endif
        default:
          printf("Invalid system call number : %d\n", type);
          exit(-1);

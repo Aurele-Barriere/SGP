@@ -279,14 +279,24 @@ Thread::CheckOverflow()
 void
 Thread::Finish ()
 {
-
-    DEBUG('t', (char *)"Finishing thread \"%s\"\n", GetName());
+#ifndef ETUDIANTS_TP
+  DEBUG('t', (char *)"Finishing thread \"%s\"\n", GetName());
  
     
   printf("**** Warning: method Thread::Finish is not fully implemented yet\n");
 
   // Go to sleep
   Sleep();  // invokes SWITCH
+#endif
+#ifdef ETUDIANTS_TP
+  IntStatus oldLevel = g_machine->interrupt->SetStatus(INTERRUPTS_OFF);
+
+  g_thread_to_be_destroyed = this;
+  // Go to sleep
+  Sleep();  // invokes SWITCH
+  
+  g_machine->interrupt->SetStatus(oldLevel);
+#endif
 
  }
 
@@ -383,7 +393,21 @@ Thread::SaveProcessorState()
   exit(-1);
 #endif
 #ifdef ETUDIANTS_TP
-  
+  // No interrupts allowed during saving of state
+  IntStatus oldLevel = g_machine->interrupt->SetStatus(INTERRUPTS_OFF);
+
+  // Save each register (float and int)
+  int i;
+  for (i=0; i<NUM_INT_REGS; i++) {
+    thread_context.int_registers[i] = g_machine->ReadIntRegister(i);
+  }
+  for (i=0; i<NUM_FP_REGS; i++) {
+    thread_context.float_registers[i] = g_machine->ReadFPRegister(i);
+  }
+  // Save condition code register
+  thread_context.cc = g_machine->ReadCC();
+
+  g_machine->interrupt->SetStatus(oldLevel);
 #endif
 }
 
@@ -396,8 +420,27 @@ Thread::SaveProcessorState()
 void
 Thread::RestoreProcessorState()
 {
+#ifndef ETUDIANTS_TP
   printf("**** Warning: method Thread::RestoreProcessorState is not implemented yet\n");
   exit(-1);
+#endif
+#ifdef ETUDIANTS_TP
+  // No interrupts allowed during restoring of state
+  IntStatus oldLevel = g_machine->interrupt->SetStatus(INTERRUPTS_OFF);
+
+  // Restore each register (float and int)
+  int i;
+  for (i=0; i<NUM_INT_REGS; i++) {
+    g_machine->WriteIntRegister(i, thread_context.int_registers[i]);
+  }
+  for (i=0; i<NUM_FP_REGS; i++) {
+    g_machine->WriteFPRegister(i, thread_context.float_registers[i]);
+  }
+  // Restore condition code register
+  g_machine->WriteCC(thread_context.cc);
+
+  g_machine->interrupt->SetStatus(oldLevel);
+#endif
 }
 
 //----------------------------------------------------------------------
