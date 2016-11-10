@@ -292,10 +292,12 @@ Thread::Finish ()
   IntStatus oldLevel = g_machine->interrupt->SetStatus(INTERRUPTS_OFF);
 
   g_thread_to_be_destroyed = this;
+  g_alive->RemoveItem(this);
   // Go to sleep
   Sleep();  // invokes SWITCH
   
   g_machine->interrupt->SetStatus(oldLevel);
+  
 #endif
 
  }
