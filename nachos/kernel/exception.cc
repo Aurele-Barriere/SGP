@@ -634,7 +634,7 @@ void ExceptionHandler(ExceptionType exceptiontype, int vaddr)
     case SC_P:{
 
       // Get the debug name in r4
-      int addr = g_machine->ReadIntregister(4);
+      int addr = g_machine->ReadIntRegister(4);
 
       // Get the argument in r5 : id of the semaphore
       int sid = g_machine->ReadIntRegister(5);
