@@ -9,6 +9,7 @@ nachos/test/matmult
 nachos/test/shell
 nachos/test/sort
 nachos/test/rdv3threads
+nachos/test/prodcons
 nachos/DISK
 nachos/SWAPDISK
 *.tar.gz
