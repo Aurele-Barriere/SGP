@@ -633,11 +633,8 @@ void ExceptionHandler(ExceptionType exceptiontype, int vaddr)
 #ifdef ETUDIANTS_TP
     case SC_P:{
 
-      // Get the debug name in r4
-      int addr = g_machine->ReadIntRegister(4);
-
-      // Get the argument in r5 : id of the semaphore
-      int sid = g_machine->ReadIntRegister(5);
+      // Get the argument in r4 : id of the semaphore
+      int sid = g_machine->ReadIntRegister(4);
 
       // Get the semaphore if it exists
       Semaphore* s = (Semaphore*) g_object_ids->SearchObject(sid);
@@ -668,10 +665,15 @@ void ExceptionHandler(ExceptionType exceptiontype, int vaddr)
     }
 
     case SC_SEM_CREATE:{
-      // Get the argument in r4 : initial value of the semaphore
-      int init = g_machine->ReadIntRegister(4);
+      // Get debug name in r4
+      int addr = g_machine->ReadIntRegister(4);
+      int size = GetLengthParam(addr);
+      char name[size];
+      GetStringParam(addr,name,size);
+      // Get the argument in r5 : initial value of the semaphore
+      int init = g_machine->ReadIntRegister(5);
       // Create the semaphore
-      Semaphore* s = new Semaphore((char*) "semaphore",init);
+      Semaphore* s = new Semaphore(name,init);
       // Add object to the global list of objects
       int32_t sid = g_object_ids->AddObject(s);
       // Write the result in the second register
@@ -696,10 +698,18 @@ void ExceptionHandler(ExceptionType exceptiontype, int vaddr)
     }
 
     case SC_LOCK_CREATE:{
+      // Get debug name in r4
+      int addr = g_machine->ReadIntRegister(4);
+      int size = GetLengthParam(addr);
+      char name[size];
+      GetStringParam(addr,name,size);
+
       // Create the lock
-      Lock* l = new Lock((char*) "Lock");
+      Lock* l = new Lock(name);
+
       // Add object to the global list of objects
       int32_t lid = g_object_ids->AddObject(l);
+
       // Write the result in the second register
       g_machine->WriteIntRegister(2,lid);
       break;
@@ -754,10 +764,18 @@ void ExceptionHandler(ExceptionType exceptiontype, int vaddr)
     }
 
     case SC_COND_CREATE:{
+      // Get debug name in r4
+      int addr = g_machine->ReadIntRegister(4);
+      int size = GetLengthParam(addr);
+      char name[size];
+      GetStringParam(addr,name,size);
+      
       // Create the condition variable
-      Condition* c = new Condition((char*) "Cond variable");
+      Condition* c = new Condition(name);
+
       // Add object to the global list of objects
       int32_t cid = g_object_ids->AddObject(c);
+
       // Write the result in the second register
       g_machine->WriteIntRegister(2,cid);
       break;
