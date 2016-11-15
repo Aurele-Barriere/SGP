@@ -1,4 +1,4 @@
-/* Testing locks */
+/* Testing Condition variables */
 #include "userlib/syscall.h"
 #include "userlib/libnachos.h"
 
@@ -7,6 +7,7 @@ CondId cond;
 
 
 void doublewait () {
+  // This first thread wait for the broadcast, then for the signal on the condition variable
   V(sema);
   CondWait(cond);
   n_printf("Broadcast received for first thread\n");
@@ -16,17 +17,20 @@ void doublewait () {
 }
 
 void simplewait () {
+  // The second threads only waits for the broadcast
   V(sema);
   CondWait(cond);
   n_printf("Broadcast received for second thread\n");
 }
 
 void signalbroadcast () {
+  // Once the previous threads are waiting, broadcast on the condition variable
   P(sema);
   P(sema);
   n_printf("Broadcasting\n");
   CondBroadcast(cond);
   P(sema);
+  // Once the first thread is waiting again, send a signal
   n_printf("Sending signal\n");
   CondSignal(cond);
 }
