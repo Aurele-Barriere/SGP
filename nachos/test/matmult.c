@@ -13,6 +13,7 @@
  */
 
 #include "userlib/syscall.h"
+#include "userlib/libnachos.h"
 
 #define Dim 	10	/* sum total of the arrays doesn't fit in 
 			 * physical memory 
@@ -27,7 +28,7 @@ int
 main()
 {
     int i, j, k;
-
+    
     Write("Start matmult\n",14,ConsoleOutput);
     
     for (i = 0; i < Dim; i++)		/* first initialize the matrices */
@@ -42,16 +43,16 @@ main()
             for (k = 0; k < Dim; k++)
 		 C[i][j] += A[i][k] * B[k][j];
 
-    /*
+    
       // Print the result
-    for (i=0;i<Dim;i++)
+    for (i=0;i<Dim;i++) {
       for (j=0;j<Dim;j++) {
-	WriteInt(C[i][j]);
-	Write("  ",2,ConsoleOutput);
+	n_printf("%d  ", (C[i][j]));
       }
-    */
+      n_printf("\n");
+    }
 
-    //Write("End matmult\n",12,ConsoleOutput);
+    Write("End matmult\n",12,ConsoleOutput);
     Exit(C[Dim-1][Dim-1]);		/* and then we're done */
 
     return 0;
