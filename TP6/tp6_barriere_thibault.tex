@@ -7,11 +7,20 @@
 \author{Aurèle Barrière \& Jérémy Thibault}
 \date{23 novembre 2016}
 
+\def\file#1{\texttt{#1}}
+\def\fun#1{\texttt{#1}}
+\def\obj#1{\texttt{#1}}
+
 \begin{document}
 \maketitle
 
 \section{Implémentation des outils de synchronisation}
 \subsection{Sémaphores}
+
+  Pour commencer, nous avons dû implémenter les fonctions de création, de destruction, ainsi que \fun{P} et \fun{V} des sémaphores, dans le fichier \file{kernel/synch.h}. Nous avons pris soin de désactiver les interruptions dans les fonctions \fun{P} et \fun{V}, puis de restaurer le statut d'interruption précédent.
+
+Il faut également mettre à jour les champs \obj{ReadyToRun}, \obj{alive} pour indiquer le statut des \obj{threads}.
+
 \subsection{Verrous}
 \subsection{Variables de condition}
 
