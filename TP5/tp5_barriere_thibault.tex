@@ -44,6 +44,15 @@ Ce TP consistait en l'écrituer de plusieurs fonctions essentielles au bon fonct
 
 \section{Implémentation des threads}
 
+La seconde partie de ce TP était dédiée à l'implémentation des threads. En effet, cela est nécessaire pour executer n'importe quel programme.
+
+Plusieurs fonctions sont nécessaires: une fonction de démarrage d'un thread \fun{Start}, une fonction de fin de thread \fun{Finish} et enfin des fonctions de sauvegarde et de restauration de contexte \fun{SaveProcessorState} et \fun{RestoreProcessorState}
+
+La méthode \fun{Start} ajoute le thread au processus actuel, puis initialise son contexte en allouant de la mémoire sur le stack. Enfin, le thread est ajouté à la liste des threads actifs et prêts.
+La méthode \fun{Finish} indique que le thread peut être détruit, le retire de la liste des threads actifs puis appelle la function \fun{Sleep}. C'est ensuite le scheduler qui détruit définitivement le thread.
+
+Les deux méthodes \fun{SaveProcessorState} et \fun{RestoreProcessorState} sauvegardent et restaurent le contenu de chaque registre entier ou flottant ainsi que du registre contenant le \emph{condition code}.
+
 \section{Programmes de test}
 \subsection{Rendez-vous entre 3 threads}
 \subsection{Test des verrous}
