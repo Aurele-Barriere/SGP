@@ -17,7 +17,7 @@ void writer() {
   for (i = 0; i < 1000; i++) {
     LockAcquire(lock);
     n = n+1;
-    n_printf("Loop %d: n = %d\n", i, n);
+    n_printf("Loop %d: n = %d\n", (i+1), n);
     LockRelease(lock);
   }
 }

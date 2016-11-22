@@ -20,7 +20,7 @@ void producer() {
   int n;
 
   
-  for (i = 0; i < 24; i++) {
+  for (i = 0; i < 5; i++) {
     n = fibo(i);
 
     // critical section
@@ -36,7 +36,7 @@ void consummer() {
   unsigned i;
   int n;
 
-  for (i = 0; i < 24; i++) {
+  for (i = 0; i < 5; i++) {
     // critical section
     P(s_full);
     n = buff[i % 8];
