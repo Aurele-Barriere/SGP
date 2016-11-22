@@ -1,0 +1,52 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[francais]{babel}
+
+\title{Compte Rendu TP5}
+\author{Aurèle Barrière \& Jérémy Thibault}
+\date{23 novembre 2016}
+
+\def\file#1{\texttt{#1}}
+\def\fun#1{\texttt{#1}}
+\def\obj#1{\texttt{#1}}
+
+\begin{document}
+\maketitle
+
+\section*{Introduction}
+
+Ce TP consistait en l'écrituer de plusieurs fonctions essentielles au bon fonctionnement du système Nachos: les outils de synchronisation (sémaphores, verrous et variables de condition) et la gestion des threads.
+
+\section{Implémentation des outils de synchronisation}
+\subsection{Sémaphores}
+
+  Pour commencer, nous avons dû implémenter les fonctions de création, de destruction, ainsi que \fun{P} et \fun{V} des sémaphores, dans le fichier \file{kernel/synch.h}. Nous avons pris soin de désactiver les interruptions dans les fonctions \fun{P} et \fun{V}, puis de restaurer le statut d'interruption précédent.
+
+  Il faut également mettre à jour les champs \obj{ReadyToRun}, \obj{alive} pour indiquer le statut des \obj{threads}.
+
+\subsection{Verrous}
+
+  Les verrous sont très similaires aux sémaphores. Cette fois-ci, en plus des fonctions de création et de destruction, le verrou possède deux méthodes \fun{Acquire} et \fun{Release}. Un thread peut demander à acquérir un verrou si celui est libre. Dans ce cas, le thread peut continuer. Sinon, le thread est mis en attente et éventuellement prendra le contrôle du verrou, s'il est libéré. %chktex 19
+
+  Le verrou possède une liste des processus qui attendent sa libération: quand la fonction \fun{Release} est appellée, il ne faut déverrouiller le verrou que si aucun thread ne l'attend. Sinon, il faut lui attribuer ce thread et le réveiller.
+
+\subsection{Variables de condition}
+
+  Les variables de condition sont là encore semblables aux cas précédents. Un thread peut demander d'attendre sur une variable de condition avec la fonction \fun{Wait}. Ensuite, il est possible d'envoyer un signal à un thread particlier avec \fun{Signal} ou à tous avec \fun{Broadcast}. Les threads signalés peuvent alors reprendre leur déroulement.
+
+\subsection{Code des appels systèmes}
+
+\section{Implémentation des threads}
+
+\section{Implémentation des exceptions}
+
+\section{Programmes de test}
+\subsection{Rendez-vous entre 3 threads}
+\subsection{Test des verrous}
+\subsection{Test des variables de conditions}
+
+\section{Résultats}
+
+
+\end{document}
