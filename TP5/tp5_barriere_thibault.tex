@@ -37,9 +37,12 @@ Ce TP consistait en l'écrituer de plusieurs fonctions essentielles au bon fonct
 
 \subsection{Code des appels systèmes}
 
-\section{Implémentation des threads}
+  Pour pouvoir utiliser ces fonctions depuis un programme utilisateur, il est nécessaire de fournir une interface. Celle-ci est définie sous forme d'appels systèmes dans le fichier \file{userlib/syscall.h}.
 
-\section{Implémentation des exceptions}
+  Nous avons dû écrire le code de ces appels systèmes. Lors d'un appel système, les arguments sont stockés dans les registres 4, 5, 6 et 7. La valeur de retour est, elle, stockée dans le registre 2.
+  Dans le cas général, nous lisons les arguments envoyés en paramètres, puis effectuons les actions nécessaires, et certains tests (par exemple, vérifier que l'objet demandé est bien du type voulu: un sémaphore n'est pas un verrou!). Enfin, nous stockons dans le registre 2 la valeur de retour, selon qu'il y ait eu une erreur ou non.
+
+\section{Implémentation des threads}
 
 \section{Programmes de test}
 \subsection{Rendez-vous entre 3 threads}
