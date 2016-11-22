@@ -2,6 +2,7 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[francais]{babel}
+\usepackage{listings}
 
 \title{Compte Rendu TP5}
 \author{Aurèle Barrière \& Jérémy Thibault}
@@ -54,11 +55,106 @@ La méthode \fun{Finish} indique que le thread peut être détruit, le retire de
 Les deux méthodes \fun{SaveProcessorState} et \fun{RestoreProcessorState} sauvegardent et restaurent le contenu de chaque registre entier ou flottant ainsi que du registre contenant le \emph{condition code}.
 
 \section{Programmes de test}
-\subsection{Rendez-vous entre 3 threads}
-\subsection{Test des verrous}
-\subsection{Test des variables de conditions}
+Pour vérifier notre implémentation, nous avons créé des programmes de tests utilisant les différents outils de synchronisation présentés dans la partie précédente.
 
-\section{Résultats}
+Du fait d'un ordonnanceur très basique et déterministe (un thread ne peut être interrompu que lors d'une attente sur un \fun{P} ou \fun{wait}), avoir une exécution conforme à nos attentes ne garantit pas que le programme se comporterait toujours correctement dans un autre contexte. 
+
+Dans un premier temps, nous avons lançé les programmes de tests déjà présents dans Nachos. Ils eurent le comportement attendu (sauf le programme \texttt{shell} qui ne fonctionne pas pour tous les programmes). Les sections suivantes présentent les tests que nous avons écrit.
+
+
+\subsection{Rendez-vous entre 3 threads}
+Le premier test implique des sémaphores et nous permet de vérifier le comportement des méthodes \fun{SemCreate}, \fun{SemDestroy}, \fun{P} et \fun{V}. Nous y créons également des nouveaux threads (avec la fonction \fun{threadCreate}). Dans ce programme, nous exécutons 3 threads qui effectuent chacun un calcul (de durée variable) puis attendent à un point de rendez-vous. Ils ne peuvent sortir de cette attente que lorsque  tous les threads ont atteint leur point de rendez-vous.
+
+Les résultats obtenus sont les suivants :
+\begin{lstlisting}
+Starting thread
+Starting thread
+FStarting thread
+Starting thread
+irst thread arrived
+Third thread arrived
+Second thread arrived
+Third thread is gone
+Second thread is gone
+First thread is gone
+Destroying semaphores
+Done destroying, bye!
+No threads ready or runnable, and no pending interrupts.
+Assuming the program completed.
+Machine halting!
+\end{lstlisting}
+
+On constate que le programme se comporte comme attendu à une exception près : l'affichage de \texttt{Starting thread} se mélange avec celui de \texttt{First thread arrived}. En effet, le premier affichage vient de la fonction \fun{printf} utilisée dans le code de nachos, alors que le deuxième provient de la fonction \fun{n\_printf} et aucun mécanisme ne permet de garantir la synchronisation entre les deux.
+
+\subsection{Test des verrous}
+Le second programme de test vérifie le bon fonctionnement des verrous. Deux processus incrémentent une variable partagée 1000 fois de suite. Autour de chaque écriture, on place un verrou d'exclusion mutuelle. On attend obtenir la valeur 2000 dans la variable partagée à la fin.
+
+\begin{lstlisting}
+Loop 999: n = 1997
+Loop 999: n = 1998
+Loop 1000: n = 1999
+Loop 1000: n = 2000
+Everything is OK!
+No threads ready or runnable, and no pending interrupts.
+Assuming the program completed.
+Machine halting!
+\end{lstlisting}
+
+On montre ici les deux derniers tours de boucles des deux programmes. On obtient bien le comportement attendu.
+
+
+\subsection{Test des variables de conditions}
+Ce test s'est avéré plus compliqué.
+En effet, il n'y a en général aucun moyen de garantir qu'un processus attend sur une variable de condition. Si celui-ci prévient juste avant d'arriver (par un sémaphore ou une variable partagée par exemple), il est toujours possible qu'il se fasse interrompre entre le moment où il prévient et le moment où il commence à attendre. Si, pour éviter ce cas, on encadre les deux instructions d'une section critique (avec un sémaphore par exemple), alors on risque l'interblocage.
+
+Pour résoudre ce problème, nous avons utilisé la particularité de notre ordonnanceur : un processus ne sera interrompu que pendant une attente. On peut donc prévenir d'une attente (avec un \fun{V} d'un sémaphore) puis commencer à attendre sur la variable de condition. Sur un autre système d'exploitation, le programme pourrait avoir un comportement différent.
+
+Le test lance trois processus. Au début, deux d'entre eux attendent sur une variable de condition jusqu'à ce que le troisième fasse un appel à \fun{CondBroadcast}. Le second thread s'arrête alors mais le premier attend que le troisième fasse appel à \fun{CondSignal}. 
+
+\begin{lstlisting}
+Starting thread
+Starting thread
+Starting thread
+Starting thread
+Broadcasting
+Broadcast received for second thread
+Broadcast received for first thread
+Sending signal
+Signal received for first thread
+Everything is OK!
+No threads ready or runnable, and no pending interrupts.
+Assuming the program completed.
+Machine halting!
+\end{lstlisting}
+
+Le programme se comporte comme prévu.
+
+\subsection{Producteur-Consommateur}
+Un autre test implémentait un producteur consommateur. Le processus producteur écrit dans un tampon et le consommateur lit ce tampon. On utilise deux sémaphores pour synchroniser les deux processus.
+
+\begin{lstlisting}
+Starting thread
+Starting thread
+WStarting thread
+rote fibo  0
+Fibo(0) = 1
+Wrote fibo  1
+Fibo(1) = 1
+Wrote fibo  2
+Fibo(2) = 2
+Wrote fibo  3
+Fibo(3) = 3
+Wrote fibo  4
+Fibo(4) = 5
+Everything is OK!
+No threads ready or runnable, and no pending interrupts.
+Assuming the program completed.
+Machine halting!
+\end{lstlisting}
+
+Le programme se comporte comme prévu. La ressource calculée est une valeur de la suite de Fibonacci. Le consommateur affiche ensuite le résultat.
+
+%\section{Résultats} j'ai mis la sectionb résultats directement dans les tests. c'est deja bcp trop long notre rapport je pense
 
 
 \end{document}

@@ -15,7 +15,7 @@ main()
 {
   n_printf("** ** ** Bonjour le monde ** ** **\n");
   n_printf("pour être sûr\n");
-  n_printf("que nos locks fonctionnent \n");
+  n_printf("que nos locks fonctionnent\n");
 
   return 0;
 }

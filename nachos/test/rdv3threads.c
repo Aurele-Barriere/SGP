@@ -55,9 +55,8 @@ int main() {
   ThreadId t2 = threadCreate((char*) "Second thread", thread2);
   ThreadId t3 = threadCreate((char*) "Third thread", thread3);
 
-  n_printf("00join\n");
+
   Join(t1);
-  n_printf("1join\n");
   Join(t2);
   Join(t3);
 
