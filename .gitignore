@@ -10,8 +10,14 @@ nachos/test/shell
 nachos/test/sort
 nachos/test/rdv3threads
 nachos/test/prodcons
+nachos/test/locktest
+nachos/test/varcondtest
+nachos/nachos.cfg
 nachos/DISK
 nachos/SWAPDISK
 *.tar.gz
 nachos/doxygen_sqlite3.db
 nachos/html
+*.aux
+*.log
+*.pdf
