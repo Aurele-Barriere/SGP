@@ -12,6 +12,8 @@ nachos/test/rdv3threads
 nachos/test/prodcons
 nachos/test/locktest
 nachos/test/varcondtest
+nachos/test/send
+nachos/test/recv
 nachos/nachos.cfg
 nachos/DISK
 nachos/SWAPDISK

@@ -75,13 +75,11 @@ int DriverACIA::TtySend(char* buff)
       // sending a character
       c = buff[sent];
       g_machine->acia->PutChar(c);
-
       sent += 1;
       if (c == '\0') {
 	over = true;
       }
   }
-  
   return sent;
 #endif
 }
@@ -104,7 +102,6 @@ int DriverACIA::TtyReceive(char* buff,int lg)
   int received = 0;
   bool over = false;
   char c;
-  
   while (!over) {
     while (g_machine->acia->GetInputStateReg() == EMPTY) {
       // busy waiting	
@@ -119,7 +116,6 @@ int DriverACIA::TtyReceive(char* buff,int lg)
       over = true;
     }
   }
-  
   return received;
 #endif
 }
