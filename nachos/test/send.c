@@ -14,7 +14,7 @@ main()
   
   i = TtySend(mess);
 
-  if (i == lg + 1) {
+  if (i == lg+1) {
     n_printf("message successfully sent\n");
   }
     
