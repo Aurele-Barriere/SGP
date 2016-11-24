@@ -195,7 +195,7 @@ void DriverACIA::InterruptSend()
     ind_send = 0;
     send_sema->V();
     int previous = g_machine->acia->GetWorkingMode();
-    g_machine->acia->SetWorkingMode(previous & REC_INTERRUPT);
+    g_machine->acia->SetWorkingMode(previous & ~SEND_INTERRUPT);
     printf("done\n");
   }
 				    
@@ -228,7 +228,7 @@ void DriverACIA::InterruptReceive()
 
     // disabling REC interrupts 
     int previous = g_machine->acia->GetWorkingMode();
-    g_machine->acia->SetWorkingMode(previous & SEND_INTERRUPT);
+    g_machine->acia->SetWorkingMode(previous & ~REC_INTERRUPT);
   }
 #endif
 }
