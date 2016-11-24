@@ -14,6 +14,8 @@ nachos/test/locktest
 nachos/test/varcondtest
 nachos/test/send
 nachos/test/recv
+nachos/test/send2
+nachos/test/recv2
 nachos/nachos.cfg
 nachos/DISK
 nachos/SWAPDISK

@@ -5,7 +5,7 @@
 #
 # To add generate a new program, just update the PROGRAMS target below
 
-PROGRAMS = halt hello shell matmult sort rdv3threads prodcons locktest varcondtest send recv
+PROGRAMS = halt hello shell matmult sort rdv3threads prodcons locktest varcondtest send recv send2 recv2
 
 all: $(PROGRAMS)
 
