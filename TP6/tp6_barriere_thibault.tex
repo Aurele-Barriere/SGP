@@ -8,22 +8,40 @@
 \author{Aurèle Barrière \quad Jérémy Thibault}
 \date{2 décembre 2016}
 
+\def\fun#1{\texttt{#1}}
+\def\zero{$'\backslash0'$}
+
+
 \begin{document}
 \maketitle
 
 \section{Attente active}
-\subsection{La fonction TtySend}
+Dans un premier temps, nous avons implémenté les méthodes d'entrée et de sortie avec de l'attente active, sans sémaphores.
+\subsection{La fonction \fun{TtySend}}
+Pour pouvoir envoyer un caractère, il faut que le registre d'état de sortie soit vide. C'est sur ce registre que se fait l'attente active: tant que ce registre est plein, on ne fait rien d'autre que tester sa disponibilité. Une fois vide, on peut utiliser la méthode \fun{PutChar} pour écrire le caractère. On continue ainsi jusqu'à rencontrer le caractère \zero.
 
-\subsection{La fonction TtyReceive}
+
+\subsection{La fonction \fun{TtyReceive}}
+La fonction de réception, elle, doit attendre que le registre d'état d'entrée soit plein. C'est donc sur ce registre que se fait l'attente active. Lorsqu'il se remplit, on peut lire le caractère avec \fun{GetChar} et recommencer jusqu'à avoir atteint la longueur demandée en paramètre.
 
 
 \section{Avec Interruptions}
-\subsection{La fonction TtySend et sa routine d'interruption}
+Pour enlever l'attente active, nous avons également implémenté une version du driver qui utilise des sémaphores pour se synchroniser, et des routines d'interruptions pour transmettre les caractères. Lorsque le registre sera disponible, une interruption sera lançée (si les interruptions sont autorisées). Une routine d'interruption sera alors appelée et traitera le caractère (en lecture ou écriture).
 
-\subsection{La fonction TtyReceive et sa routine d'interruption}
+\subsection{La fonction \fun{TtySend} et sa routine d'interruption}
+La fonction \fun{TtySend} se doit donc d'amorcer la suite d'interruptions qui conduira à l'écriture du message. Dans un premier temps, on doit commencer par effectuer un \fun{P} sur un sémaphore qui indique la disponibilité du tampon d'envoi (on ne doit pas envoyer en même temps qu'un autre processus). Ensuite, on remplit le tampon d'envoi avec le message à envoyer. On active les interruptions (avec un masque bit à bit) et on envoie le premier caractère pour déclencher la suite d'interruptions. La fonciton peut ensuite se terminer, sans avoir à attendre la fin du transfert. Une fois ce caractère envoyé, la routine d'exécution sera appelée dès que le registre est disponible. Elle se contente d'envoyer le prochain caractère avec la fonction \fun{PutChar}, et si le caractère est le dernier, notifie le sémaphore d'accès au tampon d'écriture par un  \fun{V}, et désactive les interruptions avec un masque. 
+
+\subsection{La fonction \fun{TtyReceive} et sa routine d'interruption}
+La fonction \fun{TtyReceive} attend que sa routine d'interruption ait reçu tous les caractères. La fonction débute donc par une attente sur un sémaphore. Puis on recopie le tampon de réception dans le tampon envoyé en paramètre. Il faut ensuite accepter les interruptions de réception pour le prochain transfert. La routine d'interruption se déclenche chaque fois que le registre est plein, et écrit les caractères dans le tampon de réception. Lorsque le dernier caractère est arrivé, on fait un \fun{V} sur le sémaphore pour signaler à la fonction principale qu'elle peut recopier le tampon. Enfin, on désactive les interruptions qui ne seront remises que lorsque la fonction principale a fini de recopier.
+
+\subsection{Initialisation}
+L'initialisation du driver est donc importante. Pour commencer, il faut que le sémaphore d'envoi soit initialisé avec 1 (sinon on ne pourra pas lancer de transfert) et celui de réception à 0 (sinon on commencera par recopier le tampon avant même de le remplir). De plus, il faut commencer en ayant juste les interruptions de réception d'activée. En effet, pour la réception, c'est la routine d'interruption qui commence le transfert. Pour l'envoi, il faut attendre que la fonction principale ait envoyé le premier caractère.
 
 \section{Programmes de test}
+\subsection{Fichiers de configuration}
 
+TODO : un peu plus de tests (je sais pas si on a bien fait avec attente active ET interruptions.
+décrire les tests dans cette partie.
 
 \end{document}
 
