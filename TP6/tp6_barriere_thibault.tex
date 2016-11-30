@@ -2,6 +2,10 @@
 \usepackage[utf8]{inputenc}
 \usepackage[francais]{babel}
 \usepackage{listings}
+\usepackage{caption}
+\usepackage{subcaption}
+
+\usepackage{fullpage}
 
 
 \title{Compte rendu TP 6}
@@ -44,7 +48,76 @@ Pour éxecuter les tests, il est nécessaire de lancer d'abord la machine receve
 \subsection{Tests effectués}
 Nous avons effectués deux tests différents: le premier transfère un unique message, le second transfère deux messages à la suite. Ces tests montrent que le comportement obtenu semble correspondre au comportement attendu.
 
+\subsubsection{Résultat avec attente active}
+L'envoi d'un message fonctionne.
+
+L'envoi de deux messages à la suite ne fonctionne pas toujours, comme le montre les \emph{logs} figure~\ref{busy}. Nous en proposons une explication: le deuxième message est envoyé alors que le receveur n'est pas entrée en attente du deuxième message; ainsi, il ne peut pas le recevoir.
+
+\begin{figure}
+  \begin{subfigure}[b]{\textwidth}
+    \begin{lstlisting}[language=bash]
+      ****  Loading file /send2 :
+  	- Section .sys : file offset 0x1000, size 0x230, addr 0x4000, R/X
+  	- Section .text : file offset 0x2000, size 0x1958, addr 0x400000, R/X
+  	- Section .rodata : file offset 0x4000, size 0x6c, addr 0x404000, R
+  	- Program start address : 0x4000
+    Starting thread
+    Sending message
+    message successfully sent
+    Sending message
+    message successfully sent
+    ^C
+    Cleaning up...
+    \end{lstlisting}
+    \caption{Envoi du message, dans les deux cas}\label{busy:send}
+  \end{subfigure}
+  \\
+  \begin{subfigure}[b]{\textwidth}
+    \begin{lstlisting}[language=bash]
+      ****  Loading file /recv2 :
+      	- Section .sys : file offset 0x1000, size 0x230, addr 0x4000, R/X
+      	- Section .text : file offset 0x2000, size 0x1998, addr 0x400000, R/X
+      	- Section .rodata : file offset 0x4000, size 0x6c, addr 0x404000, R
+      	- Program start address : 0x4000
+
+      Starting thread
+      Receiving message
+      message successfully received
+      message: Hello!
+      Receiving message
+      message successfully received
+      message: Bonjour!
+      ^C
+      Cleaning up...
+
+    \end{lstlisting}
+    \caption{Les deux messages sont reçus}\label{busy:recv1}
+  \end{subfigure}
+  \\
+  \begin{subfigure}[b]{\textwidth}
+    \begin{lstlisting}[language=bash]
+      ****  Loading file /recv2 :
+      	- Section .sys : file offset 0x1000, size 0x230, addr 0x4000, R/X
+      	- Section .text : file offset 0x2000, size 0x1998, addr 0x400000, R/X
+      	- Section .rodata : file offset 0x4000, size 0x6c, addr 0x404000, R
+      	- Program start address : 0x4000
+
+      Starting thread
+      Receiving message
+      message successfully received
+      message: Hello!
+      Receiving message
+      ^C
+      Cleaning up...
+    \end{lstlisting}
+    \caption{Un seul message est reçu}\label{busy:recv2}
+  \end{subfigure}
+  \\
+  \caption{Résultats de l'envoi de deux messages avec attente active}\label{busy}
+\end{figure}
+
 \subsubsection{Résultat avec interruption}
+L'utilisation des interruptions, et donc la \emph{bufferisation} des entrées permet de résoudre ce problème. Les résultats sont identiques à ceux des figures~\ref{busy:send} et~\ref{busy:recv1}.
 % TODO: un peu plus de tests (je sais pas si on a bien fait avec attente active ET interruptions.
 % décrire les tests dans cette partie.
 
