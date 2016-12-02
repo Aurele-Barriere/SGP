@@ -118,6 +118,10 @@ L'envoi de deux messages à la suite ne fonctionne pas toujours, comme le montre
 
 \subsubsection{Résultat avec interruption}
 L'utilisation des interruptions, et donc la \emph{bufferisation} des entrées permet de résoudre ce problème. Les résultats sont identiques à ceux des figures~\ref{busy:send} et~\ref{busy:recv1}.
+
+\subsubsection{Utilisation des deux}
+On peut noter que l'utilisation pour une machine d'interruptions, et pour l'autre d'attente active ne pose pas de problème, si ce n'est celui décrit plus haut pour la réception en attente active.
+
 % TODO: un peu plus de tests (je sais pas si on a bien fait avec attente active ET interruptions.
 % décrire les tests dans cette partie.
 
